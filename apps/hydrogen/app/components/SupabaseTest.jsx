@@ -7,30 +7,21 @@ export function SupabaseTest() {
   useEffect(() => {
     async function testConnection() {
       try {
-        // Dynamically import Supabase to avoid SSR issues
-        const { supabase } = await import('~/lib/supabase.js');
+        // Test using our new API functions
+        const { getCreators } = await import('~/lib/api/index.js');
         
-        if (!supabase) {
-          setConnectionStatus('❌ Supabase not initialized (client-side only)');
-          setIsConnected(false);
-          return;
-        }
+        const result = await getCreators(0, 1);
         
-        const { data, error } = await supabase
-          .from('creators')
-          .select('*')
-          .limit(1);
-        
-        if (error) {
-          setConnectionStatus(`❌ Error: ${error.message}`);
+        if (result.error) {
+          setConnectionStatus(`❌ API Error: ${result.error}`);
           setIsConnected(false);
         } else {
-          setConnectionStatus('✅ Supabase Connected Successfully!');
+          setConnectionStatus('✅ Supabase + API Connected Successfully!');
           setIsConnected(true);
-          console.log('Supabase test data:', data);
+          console.log('API test data:', result.data);
         }
       } catch (err) {
-        setConnectionStatus(`❌ Connection Failed: ${err.message}`);
+        setConnectionStatus(`❌ API Test Failed: ${err.message}`);
         setIsConnected(false);
       }
     }
