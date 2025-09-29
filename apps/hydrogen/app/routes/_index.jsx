@@ -2,7 +2,8 @@ import {Await, useLoaderData, Link} from 'react-router';
 import {Suspense} from 'react';
 import {Image} from '@shopify/hydrogen';
 import {ProductItem} from '~/components/ProductItem';
-import {SupabaseTest} from '~/components/SupabaseTest';;
+import {SupabaseTest} from '~/components/SupabaseTest';
+import {CacheTest} from '~/components/CacheTest';;
 
 /**
  * @type {MetaFunction}
@@ -66,6 +67,7 @@ export default function Homepage() {
   return (
     <div className="home">
       <SupabaseTest />
+      <CacheTest />
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
