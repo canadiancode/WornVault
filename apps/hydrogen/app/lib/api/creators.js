@@ -102,29 +102,41 @@ export async function getCreatorByUsername(username) {
 }
 
 /**
- * Create a new creator
+ * Create a new creator profile for a Supabase user
+ * @param {string} supabaseUserId - Supabase user ID
  * @param {Object} creatorData - Creator data
- * @param {string} creatorData.shopify_customer_id - Shopify customer ID
  * @param {string} creatorData.username - Unique username
  * @param {string} creatorData.display_name - Display name
  * @param {string} creatorData.bio - Bio text
  * @param {string} creatorData.avatar_url - Avatar image URL
+ * @param {string} creatorData.role - User role (fan/creator)
  * @returns {Promise<{data: Object|null, error: string|null}>}
  */
-export async function createCreator(creatorData) {
+export async function createCreator(supabaseUserId, creatorData) {
   try {
     if (!supabase) {
       throw new Error('Supabase not initialized');
     }
 
     // Validate required fields
-    if (!creatorData.username || !creatorData.display_name) {
-      return { data: null, error: 'Username and display name are required' };
+    if (!supabaseUserId || !creatorData.username || !creatorData.display_name) {
+      return { data: null, error: 'Supabase user ID, username and display name are required' };
     }
+
+    const creatorRecord = {
+      supabase_user_id: supabaseUserId,
+      username: creatorData.username,
+      display_name: creatorData.display_name,
+      bio: creatorData.bio || '',
+      avatar_url: creatorData.avatar_url || null,
+      role: creatorData.role || 'fan',
+      is_creator: creatorData.role === 'creator' || false,
+      ...creatorData
+    };
 
     const { data, error } = await supabase
       .from('creators')
-      .insert([creatorData])
+      .insert([creatorRecord])
       .select()
       .single();
 
@@ -139,6 +151,35 @@ export async function createCreator(creatorData) {
     return { data, error: null };
   } catch (err) {
     console.error('Error in createCreator:', err);
+    return { data: null, error: err.message };
+  }
+}
+
+/**
+ * Get creator by Supabase user ID
+ * @param {string} supabaseUserId - Supabase user ID
+ * @returns {Promise<{data: Object|null, error: string|null}>}
+ */
+export async function getCreatorBySupabaseUserId(supabaseUserId) {
+  try {
+    if (!supabase) {
+      throw new Error('Supabase not initialized');
+    }
+
+    const { data, error } = await supabase
+      .from('creators')
+      .select('*')
+      .eq('supabase_user_id', supabaseUserId)
+      .single();
+
+    if (error) {
+      console.error('Error fetching creator by Supabase user ID:', error);
+      return { data: null, error: error.message };
+    }
+
+    return { data, error: null };
+  } catch (err) {
+    console.error('Error in getCreatorBySupabaseUserId:', err);
     return { data: null, error: err.message };
   }
 }

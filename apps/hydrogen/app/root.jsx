@@ -14,6 +14,7 @@ import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from './components/PageLayout';
+import {AuthProvider} from '~/lib/auth-context';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -164,10 +165,14 @@ export function Layout({children}) {
             shop={data.shop}
             consent={data.consent}
           >
-            <PageLayout {...data}>{children}</PageLayout>
+            <AuthProvider>
+              <PageLayout {...data}>{children}</PageLayout>
+            </AuthProvider>
           </Analytics.Provider>
         ) : (
-          children
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         )}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
