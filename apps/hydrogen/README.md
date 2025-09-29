@@ -45,3 +45,4 @@ npm run dev
 Follow step 1 and 2 of <https://shopify.dev/docs/custom-storefronts/building-with-the-customer-account-api/hydrogen#step-1-set-up-a-public-domain-for-local-development>
 # Deployment trigger
 # Updated Mon Sep 29 15:44:21 PDT 2025
+# Force deployment - Mon Sep 29 15:50:46 PDT 2025
