@@ -22,6 +22,17 @@ export default async function handleRequest(
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
+    connectSrc: [
+      'self',
+      'https://*.supabase.co',
+      'https://monorail-edge.shopifysvc.com',
+      'https://checkout.shopify.com',
+      'https://performante-ca.myshopify.com',
+      'http://localhost:*',
+      'ws://localhost:*',
+      'ws://127.0.0.1:*',
+      'ws://*.tryhydrogen.dev:*'
+    ],
   });
 
   const body = await renderToReadableStream(
