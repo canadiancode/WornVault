@@ -8,6 +8,7 @@ export {
   getCreators,
   getCreatorById,
   getCreatorByUsername,
+  getCreatorBySupabaseUserId,
   createCreator,
   updateCreator,
   deleteCreator,

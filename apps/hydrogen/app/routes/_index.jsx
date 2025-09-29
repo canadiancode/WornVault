@@ -3,7 +3,8 @@ import {Suspense} from 'react';
 import {Image} from '@shopify/hydrogen';
 import {ProductItem} from '~/components/ProductItem';
 import {SupabaseTest} from '~/components/SupabaseTest';
-import {CacheTest} from '~/components/CacheTest';;
+import {CacheTest} from '~/components/CacheTest';
+import {AuthButton} from '~/components/AuthButton';
 
 /**
  * @type {MetaFunction}
@@ -66,6 +67,12 @@ export default function Homepage() {
   const data = useLoaderData();
   return (
     <div className="home">
+      <div className="home-header">
+        <h1>Welcome to WornVault</h1>
+        <p>Discover amazing items from your favorite creators</p>
+        <AuthButton />
+      </div>
+      
       <SupabaseTest />
       <CacheTest />
       <FeaturedCollection collection={data.featuredCollection} />
