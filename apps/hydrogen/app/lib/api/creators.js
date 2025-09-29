@@ -1,4 +1,5 @@
 import { supabase } from '../supabase.js';
+import { withCache, cacheKeys, cacheInvalidation } from '../cache.js';
 
 /**
  * Creator API functions
@@ -11,31 +12,35 @@ import { supabase } from '../supabase.js';
  * @returns {Promise<{data: Array, error: string|null, hasMore: boolean}>}
  */
 export async function getCreators(page = 0, limit = 20) {
-  try {
-    if (!supabase) {
-      throw new Error('Supabase not initialized');
+  const cacheKey = cacheKeys.creators(page, limit);
+  
+  return await withCache(cacheKey, async () => {
+    try {
+      if (!supabase) {
+        throw new Error('Supabase not initialized');
+      }
+
+      const from = page * limit;
+      const to = from + limit - 1;
+
+      const { data, error, count } = await supabase
+        .from('creators')
+        .select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(from, to);
+
+      if (error) {
+        console.error('Error fetching creators:', error);
+        return { data: null, error: error.message, hasMore: false };
+      }
+
+      const hasMore = (from + data.length) < count;
+      return { data, error: null, hasMore };
+    } catch (err) {
+      console.error('Error in getCreators:', err);
+      return { data: null, error: err.message, hasMore: false };
     }
-
-    const from = page * limit;
-    const to = from + limit - 1;
-
-    const { data, error, count } = await supabase
-      .from('creators')
-      .select('*', { count: 'exact' })
-      .order('created_at', { ascending: false })
-      .range(from, to);
-
-    if (error) {
-      console.error('Error fetching creators:', error);
-      return { data: null, error: error.message, hasMore: false };
-    }
-
-    const hasMore = (from + data.length) < count;
-    return { data, error: null, hasMore };
-  } catch (err) {
-    console.error('Error in getCreators:', err);
-    return { data: null, error: err.message, hasMore: false };
-  }
+  });
 }
 
 /**
@@ -127,6 +132,9 @@ export async function createCreator(creatorData) {
       console.error('Error creating creator:', error);
       return { data: null, error: error.message };
     }
+
+    // Invalidate creator-related cache
+    await cacheInvalidation.invalidateCreator(data.id);
 
     return { data, error: null };
   } catch (err) {
