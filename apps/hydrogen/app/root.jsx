@@ -1,4 +1,4 @@
-import {Analytics, getShopAnalytics, useNonce} from '@shopify/hydrogen';
+import {Analytics, getShopAnalytics} from '@shopify/hydrogen';
 import {
   Outlet,
   useRouteError,
@@ -144,7 +144,6 @@ function loadDeferredData({context}) {
  * @param {{children?: React.ReactNode}}
  */
 export function Layout({children}) {
-  const nonce = useNonce();
   /** @type {RootLoader} */
   const data = useRouteLoaderData('root');
 
@@ -153,6 +152,7 @@ export function Layout({children}) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta httpEquiv="Content-Security-Policy" content="default-src 'self' https:; font-src 'self' https: data:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data: blob:;" />
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
         <Meta />
@@ -174,8 +174,8 @@ export function Layout({children}) {
             {children}
           </AuthProvider>
         )}
-        <ScrollRestoration nonce={nonce} />
-        <Scripts nonce={nonce} />
+        <ScrollRestoration />
+        <Scripts />
       </body>
     </html>
   );

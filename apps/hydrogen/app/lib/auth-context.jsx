@@ -15,8 +15,11 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    
     // Get initial session
     const getInitialSession = async () => {
       try {
@@ -49,6 +52,11 @@ export function AuthProvider({ children }) {
       subscription?.unsubscribe();
     };
   }, []);
+
+  // Prevent hydration mismatch by not rendering auth-dependent content until mounted
+  if (!mounted) {
+    return <>{children}</>;
+  }
 
   const signUp = async (email, password, userData = {}) => {
     try {

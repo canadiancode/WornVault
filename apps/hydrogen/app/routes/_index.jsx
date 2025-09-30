@@ -2,8 +2,6 @@ import {Await, useLoaderData, Link} from 'react-router';
 import {Suspense} from 'react';
 import {Image} from '@shopify/hydrogen';
 import {ProductItem} from '~/components/ProductItem';
-import {SupabaseTest} from '~/components/SupabaseTest';
-import {CacheTest} from '~/components/CacheTest';
 import {AuthButton} from '~/components/AuthButton';
 
 /**
@@ -73,8 +71,6 @@ export default function Homepage() {
         <AuthButton />
       </div>
       
-      <SupabaseTest />
-      <CacheTest />
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
