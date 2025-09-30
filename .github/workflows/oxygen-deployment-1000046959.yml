@@ -34,9 +34,10 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: apps/hydrogen
 
       - name: Build and Publish to Oxygen
-        run: npx shopify hydrogen deploy
+        run: npx shopify hydrogen deploy --force
         working-directory: apps/hydrogen
         env:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000046959 }}
